@@ -1,0 +1,57 @@
+name: yummi_go
+description: "A new Flutter project."
+# 'publish_to: none' yayınlamayı önler.
+publish_to: 'none'
+
+# Uygulama sürümü ve yapı numarası.
+version: 0.1.0+1 # Build numarası eklendi
+
+environment:
+  # Flutter'ın desteklediği Dart SDK sürüm aralığı.
+  sdk: '>=3.4.0 <4.0.0' # Daha geniş ve güvenli bir aralık
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Cupertino ikonlarını kullanmak için (iOS stili ikonlar)
+  cupertino_icons: ^1.0.6 # Genellikle Flutter projeleriyle gelir
+
+  # ---- Gerekli Paketler ----
+
+  # Ses Tanıma Paketi (Sizin eklediğiniz)
+  speech_to_text: ^6.6.1
+
+  # API İstekleri İçin HTTP Paketi (API bağlantısı için GEREKLİ)
+  http: ^1.2.1 # En güncel stabil sürümü kontrol edebilirsiniz (pub.dev)
+
+  # --------------------------
+
+  # Carousel Slider yorumda kalabilir veya silebilirsin, kullanmıyoruz
+  # carousel_slider: ^4.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Kod stilini ve olası hataları kontrol eden lint kuralları.
+  flutter_lints: ^4.0.0 # Daha yaygın kullanılan bir sürüm
+
+# Flutter'a özel ayarlar.
+flutter:
+
+  # Material Design ikonlarının kullanılacağını belirtir.
+  uses-material-design: true
+
+  # Uygulamaya asset (görsel, font vb.) eklemek için:
+  # assets:
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
+
+  # Font eklemek için:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
