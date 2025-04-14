@@ -1,57 +1,47 @@
 name: yummi_go
 description: "A new Flutter project."
-# 'publish_to: none' yayınlamayı önler.
-publish_to: 'none'
+publish_to: 'none' # 'publish_to: none' yayınlamayı önler.
 
-# Uygulama sürümü ve yapı numarası.
-version: 0.1.0+1 # Build numarası eklendi
+version: 0.1.0+1
 
 environment:
-  # Flutter'ın desteklediği Dart SDK sürüm aralığı.
-  sdk: '>=3.4.0 <4.0.0' # Daha geniş ve güvenli bir aralık
+  sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
-  # Cupertino ikonlarını kullanmak için (iOS stili ikonlar)
-  cupertino_icons: ^1.0.6 # Genellikle Flutter projeleriyle gelir
+  # API İstekleri ve Çerez Yönetimi için
+  dio: ^5.4.0
+  dio_cookie_manager: ^3.1.1
+  cookie_jar: ^4.0.8
 
-  # ---- Gerekli Paketler ----
+  # Standart Flutter ikonu
+  cupertino_icons: ^1.0.6
 
-  # Ses Tanıma Paketi (Sizin eklediğiniz)
+  # Ses Tanıma Paketi
   speech_to_text: ^6.6.1
+  provider: ^6.1.4
 
-  # API İstekleri İçin HTTP Paketi (API bağlantısı için GEREKLİ)
-  http: ^1.2.1 # En güncel stabil sürümü kontrol edebilirsiniz (pub.dev)
-
-  # --------------------------
-
-  # Carousel Slider yorumda kalabilir veya silebilirsin, kullanmıyoruz
-  # carousel_slider: ^4.2.1
+  # HTTP paketi Dio ile birlikte kullanılıyorsa gereksiz olabilir.
+  # Eğer ApiService sadece Dio kullanıyorsa ve http başka bir yerde
+  # kullanılmıyorsa, bu satırı silebilirsiniz. Şimdilik bırakıyorum.
+  # Eğer sadece Dio kullanacaksanız silin:
+  # http: ^1.2.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # Kod stilini ve olası hataları kontrol eden lint kuralları.
-  flutter_lints: ^4.0.0 # Daha yaygın kullanılan bir sürüm
+  flutter_lints: ^4.0.0
 
-# Flutter'a özel ayarlar.
 flutter:
-
-  # Material Design ikonlarının kullanılacağını belirtir.
   uses-material-design: true
 
-  # Uygulamaya asset (görsel, font vb.) eklemek için:
+  # Asset veya font eklemek isterseniz aşağıdaki bölümleri açabilirsiniz:
   # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-
-  # Font eklemek için:
+  #   - images/
   # fonts:
-  #   - family: Schyler
+  #   - family: MyCustomFont
   #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  #       - asset: fonts/MyCustomFont-Regular.ttf
