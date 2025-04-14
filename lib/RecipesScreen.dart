@@ -10,6 +10,7 @@ class RecipesScreen extends StatefulWidget {
   final String? titleOverride;
   final String? searchQuery;
   final List<String>? ingredients;
+  final int? userId; // YENİ: Kullanıcı ID'si parametresi
 
   const RecipesScreen({
     super.key,
@@ -17,6 +18,7 @@ class RecipesScreen extends StatefulWidget {
     this.titleOverride,
     this.searchQuery,
     this.ingredients,
+    this.userId, // YENİ: Kurucuya ekle
   });
 
   @override
@@ -35,12 +37,17 @@ class _RecipesScreenState extends State<RecipesScreen> {
 
   void _loadRecipes() {
     setState(() {
-      _recipesFuture = _apiService.getRecipes(
-        category: widget.category,
-        search: widget.searchQuery,
-        // sortBy: 'date_desc', // API destekliyorsa
-        ingredients: widget.ingredients,
-      );
+      if (widget.userId != null) {
+        // Eğer userId parametresi varsa, kullanıcıya ait tarifleri çek
+        _recipesFuture = _apiService.getRecipesByUserId(widget.userId!);
+      } else {
+        // Aksi takdirde, mevcut filtreleme mantığını kullan
+        _recipesFuture = _apiService.getRecipes(
+          category: widget.category,
+          search: widget.searchQuery,
+          ingredients: widget.ingredients,
+        );
+      }
     });
   }
 
@@ -50,7 +57,8 @@ class _RecipesScreenState extends State<RecipesScreen> {
     if (widget.category != oldWidget.category ||
         widget.searchQuery != oldWidget.searchQuery ||
         widget.ingredients != oldWidget.ingredients ||
-        widget.titleOverride != oldWidget.titleOverride) {
+        widget.titleOverride != oldWidget.titleOverride ||
+        widget.userId != oldWidget.userId) {
       _loadRecipes();
     }
   }

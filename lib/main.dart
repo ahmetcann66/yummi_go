@@ -2,15 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:yummi_go/LoginScreen.dart';
-import 'services/api_service.dart';
-// --- Ana Ekranı Tekrar Import Et ---
-import 'HomeScreen.dart'; // Veya: import 'package:yummi_go/HomeScreen.dart';
-// Test ekranı importunu kaldır veya yorum satırı yap
-// import 'test_carousel_screen.dart';
-// ---------------------------------
 
 void main() {
-  initializeHttpOverrides();
   runApp(const MyApp());
 }
 

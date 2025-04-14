@@ -25,7 +25,7 @@ class _TrendingRecipesScreenState extends State<TrendingRecipesScreen> {
   void _loadTrendingRecipes() {
     setState(() {
       // API'nizin 'likes_desc' veya benzeri bir sıralamayı desteklediğini varsayıyoruz
-      _trendingRecipesFuture = _apiService.getRecipes(sortBy: 'likes_desc');
+      //_trendingRecipesFuture = _apiService.getRecipes(sortBy: 'likes_desc');
     });
   }
 

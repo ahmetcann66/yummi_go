@@ -1,14 +1,14 @@
-// lib/screens/login_screen.dart <-- Örnek dosya yolu
+// lib/screens/login_screen.dart
 
 import 'package:flutter/material.dart';
 import 'RegisterScreen.dart'; // Kayıt ekranı importu
 import 'ForgotPasswordScreen.dart'; // Şifremi unuttum ekranı importu
-import 'HomeScreen.dart'; // Başarılı giriş sonrası yönlendirilecek ekran (Varsayılan isim)
+import 'HomeScreen.dart'; // Başarılı giriş sonrası yönlendirilecek ekran
 
 // --- GEREKLİ IMPORTLAR ---
 import '../services/api_service.dart'; // ApiService sınıfının bulunduğu dosya yolu
-import '../models/login_model.dart'; // LoginModel sınıfının bulunduğu dosya yolu
-import '../models/user_model.dart'; // UserModel sınıfının bulunduğu dosya yolu (isteğe bağlı, kullanıcı bilgisini saklamak için)
+import '../models/LoginModel.dart'; // LoginModel sınıfının bulunduğu dosya yolu
+import '../models/UserModel.dart'; // UserModel sınıfının bulunduğu dosya yolu (isteğe bağlı)
 // --- ---------------- ---
 
 class LoginScreen extends StatefulWidget {
@@ -21,20 +21,19 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController =
-      TextEditingController(); // E-posta yerine kullanıcı adı kullanıldığı varsayıldı
+      TextEditingController(); // Kullanıcı adı kontrolcüsü
   final _passwordController = TextEditingController();
   bool _isLoading = false;
 
   // --- API Servisi Örneği ---
-  // Not: Daha büyük uygulamalarda bu servisi Provider, Riverpod, GetIt gibi
-  // bir state management/dependency injection çözümü ile sağlamak daha iyidir.
   final ApiService _apiService = ApiService();
   // --- ------------------ ---
 
-  // --- Constants ---
-  final String backgroundImageUrl =
+  // --- Sabit Değerler ---
+  final String _backgroundImageUrl =
       'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80';
-  final double backgroundOverlayOpacity = 0.65;
+  final double _backgroundOverlayOpacity = 0.65;
+  // --- ------------- ---
 
   @override
   void dispose() {
@@ -52,52 +51,49 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final username = _usernameController.text.trim(); // Kullanıcı adını al
-      final password = _passwordController.text;
+      final String username = _usernameController.text.trim();
+      final String password = _passwordController.text;
 
-      // LoginModel oluştur (API'nin beklediği alanlar)
-      final loginData = LoginModel(username: username, password: password);
+      final LoginModel loginData =
+          LoginModel(username: username, password: password);
 
-      print('API ye giriş isteği gönderiliyor: $username'); // Loglama
+      print('API isteği gönderiliyor: Kullanıcı Adı = $username');
 
-      // ApiService üzerinden giriş yapmayı dene
-      final UserModel user = await _apiService.loginUser(loginData);
+      final UserModel? user = await _apiService.login(loginData);
 
-      print('Giriş Başarılı: ${user.username}'); // Başarılı loglama
+      print('Giriş Başarılı: Kullanıcı = ${user!.username}');
 
-      if (!mounted) return; // Widget ağaçtan kaldırıldıysa işlem yapma
+      if (!mounted) return;
 
-      // Başarı mesajı göster
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content:
-              Text('Hoş geldiniz, ${user.username}!'), // Kullanıcı adını göster
+          content: Text('Hoş geldiniz, ${user.username}!'),
           backgroundColor: Colors.green[600],
         ),
       );
 
-      // Başarılı giriş sonrası ana ekrana yönlendir
-      // pushReplacement, geri tuşuyla login ekranına dönülmesini engeller
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-            builder: (_) => const HomeScreen()), // HomeScreen'a yönlendir
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } catch (error) {
-      print('Giriş Hatası: $error'); // Hata loglama
+      print('Giriş Hatası: $error');
 
-      if (!mounted) return; // Widget ağaçtan kaldırıldıysa işlem yapma
+      if (!mounted) return;
 
-      // Hata mesajı göster
+      String errorMessage = 'Giriş yapılamadı.';
+      if (error is Exception &&
+          error.toString().contains('Kullanıcı adı veya şifre hatalı')) {
+        errorMessage = 'Kullanıcı adı veya şifre hatalı.';
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          // ApiService'den gelen hata mesajını göster
-          content: Text('Giriş yapılamadı: ${error.toString()}'),
+          content: Text(errorMessage),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     } finally {
-      // İşlem bittiğinde yükleniyor durumunu kapat
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -116,25 +112,25 @@ class _LoginScreenState extends State<LoginScreen> {
         children: <Widget>[
           // Arka Plan Görseli
           Image.network(
-            backgroundImageUrl,
+            _backgroundImageUrl,
             fit: BoxFit.cover,
-            // Hata ve yüklenme durumları için builder ekleyebilirsiniz
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;
               return Center(
-                  child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ));
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              );
             },
             errorBuilder: (context, error, stackTrace) => const Center(
                 child: Icon(Icons.broken_image, color: Colors.grey, size: 50)),
           ),
 
           // Siyah Opaklık Filtresi
-          Container(color: Colors.black.withOpacity(backgroundOverlayOpacity)),
+          Container(color: Colors.black.withOpacity(_backgroundOverlayOpacity)),
 
           // Giriş Formu
           SafeArea(
@@ -185,17 +181,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 48.0),
 
-                      // --- Kullanıcı Adı Alanı ---
+                      // Kullanıcı Adı Alanı
                       TextFormField(
-                        controller:
-                            _usernameController, // Kullanıcı adı controller'ı
-                        keyboardType:
-                            TextInputType.text, // Klavye tipini text yap
+                        controller: _usernameController,
+                        keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                          hintText: 'Kullanıcı Adınız', // Hint text'i güncelle
+                          hintText: 'Kullanıcı Adınız',
                           prefixIcon: Icon(Icons.person_outline,
-                              color: Colors.grey[500]), // İkonu güncelle
-                          // Arka plan, kenarlık vb. stiller eklenebilir
+                              color: Colors.grey[500]),
                           filled: true,
                           fillColor: Colors.white.withOpacity(0.9),
                           border: OutlineInputBorder(
@@ -206,18 +199,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: const TextStyle(color: Colors.black87),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            // E-posta yerine kullanıcı adı kontrolü
                             return 'Kullanıcı adı alanı boş bırakılamaz.';
                           }
-                          // İsteğe bağlı: Kullanıcı adı için ek kurallar (örn: uzunluk)
-                          // if (value.length < 3) {
-                          //   return 'Kullanıcı adı en az 3 karakter olmalıdır.';
-                          // }
                           return null;
                         },
                       ),
                       const SizedBox(height: 16.0),
-                      // --- ------------------- ---
 
                       // Şifre Alanı
                       TextFormField(
@@ -240,7 +227,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             return 'Şifre alanı boş bırakılamaz.';
                           }
                           if (value.length < 2) {
-                            // API'nizin gereksinimine göre ayarlayın
                             return 'Şifre en az 6 karakter olmalıdır.';
                           }
                           return null;
@@ -250,11 +236,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Giriş Yap Butonu
                       ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : _login, // _login fonksiyonunu çağır
+                        onPressed: _isLoading ? null : _login,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: accentColor, // Buton rengi
+                          backgroundColor: accentColor,
                           padding: const EdgeInsets.symmetric(vertical: 14.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
@@ -307,6 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
+
                       // Şifremi Unuttum Bağlantısı
                       TextButton(
                         onPressed: _isLoading
@@ -319,8 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             const ForgotPasswordScreen()));
                               },
                         style: TextButton.styleFrom(
-                          foregroundColor: Colors.white.withOpacity(0.7),
-                        ),
+                            foregroundColor: Colors.white.withOpacity(0.7)),
                         child: const Text('Şifremi Unuttum'),
                       ),
                     ],

@@ -287,8 +287,9 @@ class _HomeContentState extends State<HomeContent> {
   void _loadTopRecipes() {
     setState(() {
       // API'nizin 'likes_desc' ve 'limit' parametrelerini desteklediğini varsayıyoruz
-      _topRecipesFuture =
-          _apiService.getRecipes(sortBy: 'likes_desc', limit: 5);
+      //_topRecipesFuture =
+      //_apiService.getRecipes(sortBy: 'likes_desc', limit: 5);
+      _topRecipesFuture = _apiService.getTopRatedRecipes(limit: 5);
       // Desteklemiyorsa:
       // _topRecipesFuture = _apiService.getRecipes().then((all) {
       //   all.sort((a, b) => b.likeCount.compareTo(a.likeCount));
@@ -542,8 +543,9 @@ class _HomeContentState extends State<HomeContent> {
                             onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        RecipesScreen()))), // API'ye bağlı
+                                    builder: (context) => RecipesScreen(
+                                          userId: 1,
+                                        )))), // API'ye bağlı
                         _buildButtonItem(context, Icons.menu_book_outlined,
                             'MENÜLER', Colors.white,
                             onTap: () => Navigator.push(
